@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'}}
     steps:
-      # Manage workflow deployment status
       - name: 'Commit Status: Set Workflow Status as Pending'
         uses: myrotvorets/set-commit-status-action@1.1.6
         with:
@@ -22,34 +21,6 @@ jobs:
           sha: ${{ github.event.workflow_run.head_sha }}
           context: 'Deploy Preview (pull_request => workflow_run)'
 
-      # - name: Get pull request number
-      #   uses: actions/github-script@v6
-      #   id: pull-request-number
-      #   with:
-      #     result-encoding: string
-      #     script: |
-      #       const unzipper = require('unzipper');
-      #       const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         run_id: ${{github.event.workflow_run.id}}
-      #       });
-      #       const artifact = artifacts.data.artifacts.filter(
-      #         artifact => artifact.name === 'pr'
-      #       )[0];
-      #       if (!artifact) {
-      #         throw new Error('No pr artifact found');
-      #       }
-      #       const download = await github.rest.actions.downloadArtifact({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         artifact_id: artifact.id,
-      #         archive_format: 'zip'
-      #       });
-      #       const directory = await unzipper.Open.buffer(Buffer.from(download.data));
-      #       const file = directory.files.find(d => d.path === 'number');
-      #       const content = await file.buffer();
-      #       return content.toString();
       - uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -61,6 +32,8 @@ jobs:
         id: pull-request-number
         run: |
           export PR_NUMBER=$(cat pr_number)
+          echo ${PR_NUMBER}
+          echo "{result}={${PR_NUMBER}}"
           echo "{result}={${PR_NUMBER}}" >> $GITHUB_OUTPUT
 
       - run: ls -ltrh
@@ -88,4 +61,5 @@ jobs:
           sha: ${{ github.event.workflow_run.head_sha }}
           context: 'Deploy Preview (pull_request => workflow_run)'
           description: ${{ job.status == 'success' && env.DEPLOY_SUCCESS || env.DEPLOY_FAILURE }}
+          # TODO: keep default targetUrl in case of failure?
           targetUrl: https://doc-preview-${{steps.pull-request-number.outputs.result}}--lesteve-test-netlify.netlify.app
