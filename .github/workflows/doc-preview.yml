@@ -76,8 +76,8 @@ jobs:
 
       - name: 'Commit Status: Update deployment status'
         uses: myrotvorets/set-commit-status-action@1.1.6
-        # Always run this step regardless of job failing early:
-        if: ${{ always() }}
+        # Always run this step regardless of job failing early
+        if: always()
         env:
           DEPLOY_SUCCESS: Successfully deployed preview.
           DEPLOY_FAILURE: Failed to deploy preview.
@@ -87,3 +87,4 @@ jobs:
           sha: ${{ github.event.workflow_run.head_sha }}
           context: 'Deploy Preview (pull_request => workflow_run)'
           description: ${{ job.status == 'success' && env.DEPLOY_SUCCESS || env.DEPLOY_FAILURE }}
+          targetUrl: https://doc-preview-${{steps.pull-request-number.outputs.result}}--lesteve-test-netlify.netlify.app
