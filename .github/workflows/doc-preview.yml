@@ -37,7 +37,7 @@ jobs:
           # echo "{result}={$PR_NUMBER}" >> $GITHUB_OUTPUT
           echo ::set-output name=result::"$PR_NUMBER"
 
-      - run: ls -ltrh boom
+      - run: ls -ltrh
       - run: ls -ltrh _build/html
       - uses: actions/setup-node@v3
         with:
