@@ -19,7 +19,7 @@ jobs:
           # Should match `env.PR_HEADSHA` when triggered by `pull_request` event workflow,
           # Avoids failure of ENV being unavailable if job fails early:
           sha: ${{ github.event.workflow_run.head_sha }}
-          context: 'Deploy Preview (pull_request => workflow_run)'
+          context: 'Doc Preview'
 
       - uses: dawidd6/action-download-artifact@v2
         with:
@@ -32,10 +32,8 @@ jobs:
         id: pull-request-number
         run: |
           export PR_NUMBER=$(cat pr_number)
-          echo ${PR_NUMBER}
-          echo "{result}={${PR_NUMBER}}"
-          # echo "{result}={$PR_NUMBER}" >> $GITHUB_OUTPUT
-          echo ::set-output name=result::"$PR_NUMBER"
+          echo "result=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          # echo ::set-output name=result::"$PR_NUMBER"
 
       - run: ls -ltrh
       - run: ls -ltrh _build/html
@@ -62,6 +60,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status == 'success' && 'success' || 'failure' }}
           sha: ${{ github.event.workflow_run.head_sha }}
-          context: 'Deploy Preview (pull_request => workflow_run)'
+          context: 'Doc Preview'
           description: ${{ job.status == 'success' && env.DEPLOY_SUCCESS || env.DEPLOY_FAILURE }}
           targetUrl:  ${{ job.status == 'success' && env.TARGET_URL_SUCCESS || env.TARGET_URL_FAILURE }}
