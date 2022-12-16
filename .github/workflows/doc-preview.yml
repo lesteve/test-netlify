@@ -34,7 +34,8 @@ jobs:
           export PR_NUMBER=$(cat pr_number)
           echo ${PR_NUMBER}
           echo "{result}={${PR_NUMBER}}"
-          echo "{result}={${PR_NUMBER}}" >> $GITHUB_OUTPUT
+          echo "{result}={$PR_NUMBER}" >> $GITHUB_OUTPUT
+          # echo ::set-output name=result::"$PR_NUMBER"
 
       - run: ls -ltrh
       - run: ls -ltrh _build/html
@@ -55,11 +56,13 @@ jobs:
         env:
           DEPLOY_SUCCESS: Successfully deployed preview.
           DEPLOY_FAILURE: Failed to deploy preview.
+          TARGET_URL_SUCCESS: https://doc-preview-${{steps.pull-request-number.outputs.result}}--lesteve-test-netlify.netlify.app
+          TARGET_URL_FAILURE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status == 'success' && 'success' || 'failure' }}
           sha: ${{ github.event.workflow_run.head_sha }}
           context: 'Deploy Preview (pull_request => workflow_run)'
           description: ${{ job.status == 'success' && env.DEPLOY_SUCCESS || env.DEPLOY_FAILURE }}
-          # TODO: keep default targetUrl in case of failure?
-          targetUrl: https://doc-preview-${{steps.pull-request-number.outputs.result}}--lesteve-test-netlify.netlify.app
+          targetUrl:  ${{ job.status == 'success' && env.TARGET_URL_SUCCESS || env.TARGET_URL_FAILURE }}
+
