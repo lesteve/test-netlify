@@ -34,8 +34,8 @@ jobs:
           export PR_NUMBER=$(cat pr_number)
           echo ${PR_NUMBER}
           echo "{result}={${PR_NUMBER}}"
-          echo "{result}={$PR_NUMBER}" >> $GITHUB_OUTPUT
-          # echo ::set-output name=result::"$PR_NUMBER"
+          # echo "{result}={$PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo ::set-output name=result::"$PR_NUMBER"
 
       - run: ls -ltrh
       - run: ls -ltrh _build/html
