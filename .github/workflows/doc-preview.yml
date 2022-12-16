@@ -37,7 +37,7 @@ jobs:
           # echo "{result}={$PR_NUMBER}" >> $GITHUB_OUTPUT
           echo ::set-output name=result::"$PR_NUMBER"
 
-      - run: ls -ltrh
+      - run: ls -ltrh boom
       - run: ls -ltrh _build/html
       - uses: actions/setup-node@v3
         with:
@@ -65,4 +65,3 @@ jobs:
           context: 'Deploy Preview (pull_request => workflow_run)'
           description: ${{ job.status == 'success' && env.DEPLOY_SUCCESS || env.DEPLOY_FAILURE }}
           targetUrl:  ${{ job.status == 'success' && env.TARGET_URL_SUCCESS || env.TARGET_URL_FAILURE }}
-
