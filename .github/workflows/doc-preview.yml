@@ -16,8 +16,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: pending
-          # Should match `env.PR_HEADSHA` when triggered by `pull_request` event workflow,
-          # Avoids failure of ENV being unavailable if job fails early:
           sha: ${{ github.event.workflow_run.head_sha }}
           context: 'Doc Preview'
 
@@ -33,7 +31,6 @@ jobs:
         run: |
           export PR_NUMBER=$(cat pr_number)
           echo "result=${PR_NUMBER}" >> $GITHUB_OUTPUT
-          # echo ::set-output name=result::"$PR_NUMBER"
 
       - run: ls -ltrh
       - run: ls -ltrh _build/html
