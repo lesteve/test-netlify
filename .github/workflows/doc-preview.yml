@@ -61,7 +61,8 @@ jobs:
         id: pull-request-number
         run: |
           export PR_NUMBER=$(cat pr_number)
-          echo ::set-output name=result::"$PR_NUMBER"
+          echo "{result}={${PR_NUMBER}}" >> $GITHUB_OUTPUT
+
       - run: ls -ltrh
       - run: ls -ltrh _build/html
       - uses: actions/setup-node@v3
